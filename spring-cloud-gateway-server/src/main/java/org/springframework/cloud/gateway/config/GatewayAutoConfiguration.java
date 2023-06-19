@@ -27,6 +27,7 @@ import javax.net.ssl.TrustManagerFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.autoconfigure.web.reactive.WebFluxProperties;
 import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.http.client.WebsocketClientSpec;
@@ -452,8 +453,8 @@ public class GatewayAutoConfiguration {
 
 	@Bean
 	@ConditionalOnEnabledPredicate
-	public PathRoutePredicateFactory pathRoutePredicateFactory() {
-		return new PathRoutePredicateFactory();
+	public PathRoutePredicateFactory pathRoutePredicateFactory(WebFluxProperties webFluxProperties) {
+		return new PathRoutePredicateFactory(webFluxProperties);
 	}
 
 	@Bean
