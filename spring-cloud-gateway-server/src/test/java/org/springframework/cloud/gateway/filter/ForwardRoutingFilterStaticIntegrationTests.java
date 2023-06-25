@@ -14,59 +14,36 @@
  * limitations under the License.
  */
 
-package org.springframework.cloud.gateway.handler.predicate;
-
-import java.util.function.Supplier;
+package org.springframework.cloud.gateway.filter;
 
 import org.junit.jupiter.api.Test;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.gateway.filter.WeightCalculatorWebFilter;
 import org.springframework.cloud.gateway.test.BaseWebClientTests;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpHeaders;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@ActiveProfiles("weights-404")
-@DirtiesContext
-class WeightRoutePredicateFactoryYaml404Tests extends BaseWebClientTests {
-
-	@Autowired
-	private WeightCalculatorWebFilter filter;
-
-	private static Supplier<Double> getRandom(double value) {
-		Supplier<Double> random = mock(Supplier.class);
-		when(random.get()).thenReturn(value);
-		return random;
-	}
+@ActiveProfiles("forwardstatic")
+public class ForwardRoutingFilterStaticIntegrationTests extends BaseWebClientTests {
 
 	@Test
-	void weightsFromYamlNot404() {
-		filter.setRandomSupplier(getRandom(0.5));
-
-		testClient.get().uri("/get").header(HttpHeaders.HOST, "www.weight4041.org").exchange().expectStatus().isOk()
-				.expectHeader().valueEquals(ROUTE_ID_HEADER, "weight_first_404_test_1");
+	public void gatewayRequestsMeterFilterHasTags() {
+		testClient.get().uri("/mydocs").exchange().expectStatus().isOk().expectBody(String.class)
+				.consumeWith(result -> {
+					assertThat(result.getResponseBody()).contains("Docs 123");
+				});
 	}
 
 	@EnableAutoConfiguration
 	@SpringBootConfiguration
 	@Import(DefaultTestConfig.class)
-	static class TestConfig {
-
-		TestConfig(WeightCalculatorWebFilter filter) {
-			Supplier<Double> random = getRandom(0.4);
-
-			filter.setRandomSupplier(random);
-		}
+	public static class CustomConfig {
 
 	}
 
