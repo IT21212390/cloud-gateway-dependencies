@@ -23,8 +23,9 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
-
 import org.mockito.ArgumentCaptor;
+import reactor.core.publisher.Mono;
+
 import org.springframework.boot.autoconfigure.web.reactive.WebFluxProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -34,7 +35,6 @@ import org.springframework.cloud.gateway.route.Route;
 import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.web.server.ServerWebExchange;
-import reactor.core.publisher.Mono;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -96,7 +96,8 @@ public class GatewayPredicateVisitorTests {
 
 		Predicate<ServerWebExchange> predicate = pathRoutePredicateFactory.apply(config);
 
-		ServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("http://127.0.0.1:8080/gw/api/v1/temp/test").build());
+		ServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("http://127.0.0.1:8080/gw/api/v1/temp/test")
+				.build());
 
 		assertThat(predicate.test(exchange)).isEqualTo(true);
 	}
@@ -113,7 +114,8 @@ public class GatewayPredicateVisitorTests {
 
 		Predicate<ServerWebExchange> predicate = pathRoutePredicateFactory.apply(config);
 
-		ServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("http://127.0.0.1:8080/gw/api/v1/temp/test").build());
+		ServerWebExchange exchange = MockServerWebExchange.from(MockServerHttpRequest.get("http://127.0.0.1:8080/gw/api/v1/temp/test")
+				.build());
 
 		assertThat(predicate.test(exchange)).isEqualTo(true);
 
