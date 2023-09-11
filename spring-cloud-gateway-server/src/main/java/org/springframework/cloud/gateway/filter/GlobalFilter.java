@@ -32,7 +32,7 @@ import org.springframework.web.server.ServerWebExchange;
  * @author Rossen Stoyanchev
  * @since 5.0
  */
-public interface GlobalFilter {
+public interface GlobalFilter extends PreFlightRequestFilter {
 
 	/**
 	 * Process the Web request and (optionally) delegate to the next {@code GatewayFilter}
@@ -42,5 +42,10 @@ public interface GlobalFilter {
 	 * @return {@code Mono<Void>} to indicate when request processing is complete
 	 */
 	Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain);
+
+	@Override
+	default boolean handlePreFlightRequest() {
+		return false;
+	}
 
 }
