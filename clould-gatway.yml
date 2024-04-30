@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clould-gatway
+  labels:
+    app: clould-gatway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clould-gatway
+  template:
+    metadata:
+      labels:
+        app: clould-gatway 
+    spec:
+      containers:
+      - name: nodeserver
+        image: 192.168.20.32:5000/clould-gatway:latest
+        ports:
+        - containerPort: 3000
